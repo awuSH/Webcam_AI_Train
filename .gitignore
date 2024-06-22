@@ -2,5 +2,5 @@ helpers
 .vscode
 skicam_people_count.code-workspace
 .DS_Store
-tests
-/tests
+
+tests/
