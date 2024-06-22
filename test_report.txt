@@ -1,0 +1,15 @@
+Klassifizierungsbericht:
+              precision    recall  f1-score   support
+
+        much       0.91      0.94      0.92        51
+        none       0.93      0.85      0.89        66
+        some       0.79      0.84      0.81        57
+
+    accuracy                           0.87       174
+   macro avg       0.88      0.88      0.88       174
+weighted avg       0.88      0.87      0.87       174
+
+Verwirrungsmatrix:
+[[48  0  3]
+ [ 0 56 10]
+ [ 5  4 48]]
