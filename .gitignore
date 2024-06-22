@@ -1,5 +1,6 @@
 helpers
-.vscode
+.vscode/
+__pychache__/
 skicam_people_count.code-workspace
 .DS_Store
 
