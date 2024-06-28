@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Misclassified Images Viewer</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+        }
+        img {
+            max-width: 100%;
+            height: auto;
+        }
+        .info {
+            margin: 20px 0;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Misclassified Images Viewer</h1>
+    <div class="info">
+        <p>Predicted Class: <span id="predictedClass"></span></p>
+        <p>Effective Class: <span id="trueClass"></span></p>
+    </div>
+    <div>
+        <img id="image" src="" alt="Misclassified Image">
+    </div>
+    <div>
+        <button onclick="showNextImage()">Next</button>
+    </div>
+
+    <script>
+        const classNames = {
+            0: "much",
+            1: "none",
+            2: "some"
+        };
+
+        let misclassifiedImages = [];
+        let currentIndex = 0;
+
+        async function loadMisclassifiedImages() {
+            const response = await fetch('../statistics/predictions.txt');
+            const text = await response.text();
+            const lines = text.split('\n').slice(1); // Erste Zeile überspringen (Header)
+            lines.forEach(line => {
+                const [path, predictedClass, trueClass, isCorrect] = line.split(', ');
+                if (isCorrect.trim() === 'falsch') {
+                    const fileName = path.split('/').pop();
+                    const imagePath = `../statistics/misclassified_images/${fileName}`;
+                    misclassifiedImages.push({ path: imagePath, predicted_class: classNames[predictedClass], true_class: classNames[trueClass] });
+                }
+            });
+            showImage();
+        }
+
+        function showImage() {
+            if (misclassifiedImages.length > 0) {
+                const currentImage = misclassifiedImages[currentIndex];
+                document.getElementById('image').src = currentImage.path;
+                document.getElementById('predictedClass').innerText = currentImage.predicted_class;
+                document.getElementById('trueClass').innerText = currentImage.true_class;
+            } else {
+                document.getElementById('image').alt = "No misclassified images found.";
+                document.getElementById('predictedClass').innerText = "";
+                document.getElementById('trueClass').innerText = "";
+            }
+        }
+
+        function showNextImage() {
+            if (misclassifiedImages.length > 0) {
+                currentIndex = (currentIndex + 1) % misclassifiedImages.length;
+                showImage();
+            }
+        }
+
+        window.onload = loadMisclassifiedImages;
+    </script>
+</body>
+</html>
